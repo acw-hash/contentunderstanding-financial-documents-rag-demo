@@ -9,6 +9,7 @@ tiktoken
 python-dotenv
 pillow
 requests
+pypdf
 langchain-openai
 langchain-community
 langchain-core

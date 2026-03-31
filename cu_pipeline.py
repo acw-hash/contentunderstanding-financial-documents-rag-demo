@@ -60,10 +60,15 @@ ANALYZER_CONFIGS = [
         "location": DATA_DIR / "sample_report.pdf",
     },
     # {
-    #     "id": "cu_image_analyzer",
-    #     "template_path": TEMPLATE_DIR / "image_chart.json",
-    #     "location": DATA_DIR / "impact_report.pdf",
+    #     "id": "cu_doc_layout_analyzer",
+    #     "template_path": TEMPLATE_DIR / "content_document_layout.json",
+    #     "location": DATA_DIR / "sample_report.pdf",
     # },
+    {
+        "id": "cu_image_analyzer",
+        "template_path": TEMPLATE_DIR / "image_chart.json",
+        "location": DATA_DIR / "sample_report.pdf",
+    },
     # {
     #     "id": "cu_audio_analyzer",
     #     "template_path": TEMPLATE_DIR / "call_recording_analytics.json",
@@ -173,10 +178,12 @@ def _prepare_analyzer_resource(analyzer_resource: dict) -> dict:
     if base_analyzer_id in base_analyzer_map:
         resource["baseAnalyzerId"] = base_analyzer_map[base_analyzer_id]
 
-    models = dict(resource.get("models") or {})
-    models.setdefault("completion", CU_COMPLETION_MODEL_NAME)
-    models.setdefault("embedding", CU_EMBEDDING_MODEL_NAME)
-    resource["models"] = models
+    # Image analyzer doesn't support models configuration
+    if base_analyzer_id not in ("prebuilt-imageAnalyzer", "prebuilt-image"):
+        models = dict(resource.get("models") or {})
+        models.setdefault("completion", CU_COMPLETION_MODEL_NAME)
+        models.setdefault("embedding", CU_EMBEDDING_MODEL_NAME)
+        resource["models"] = models
     return resource
 
 
@@ -333,6 +340,7 @@ def process_content(analyzer_content):
     config_by_id = {cfg["id"]: cfg for cfg in ANALYZER_CONFIGS}
     prefix_by_id = {
         "cu_doc_analyzer": "Document analysis content for file: ",
+        "cu_doc_layout_analyzer": "Layout-aware document analysis with structured sections, tables, and metrics for file: ",
         "cu_image_analyzer": "Chart/figure analysis content for file: ",
         "cu_audio_analyzer": "This is a json string representing an audio segment with transcription for the file located in ",
         "cu_video_analyzer": "The following is a json string representing a video segment with scene description and transcript for the file located in ",

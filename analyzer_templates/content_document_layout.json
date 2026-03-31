@@ -1,0 +1,108 @@
+{
+    "description": "Document layout analyzer for structured 10-K extraction with table preservation",
+    "baseAnalyzerId": "prebuilt-document",
+    "fieldSchema": {
+        "name": "DocumentLayout",
+        "description": "Structured document understanding with layout, tables, sections, and reading order.",
+        "fields": {
+            "DocumentSections": {
+                "type": "array",
+                "method": "extract",
+                "description": "Top-level sections and subsections with headers and content.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "SectionHeader": {
+                            "type": "string",
+                            "method": "extract",
+                            "description": "Section title or heading."
+                        },
+                        "SectionContent": {
+                            "type": "string",
+                            "method": "extract",
+                            "description": "Text content of the section."
+                        },
+                        "SectionLevel": {
+                            "type": "string",
+                            "method": "extract",
+                            "description": "Hierarchy level (main, subsection, etc.)."
+                        }
+                    }
+                }
+            },
+            "Tables": {
+                "type": "array",
+                "method": "extract",
+                "description": "Extracted tables with structure preserved.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "TableTitle": {
+                            "type": "string",
+                            "method": "extract",
+                            "description": "Title or caption of the table."
+                        },
+                        "TableContent": {
+                            "type": "string",
+                            "method": "extract",
+                            "description": "Table data in markdown or structured format."
+                        },
+                        "TableContext": {
+                            "type": "string",
+                            "method": "extract",
+                            "description": "Surrounding text providing context for the table."
+                        }
+                    }
+                }
+            },
+            "KeyMetrics": {
+                "type": "array",
+                "method": "extract",
+                "description": "Important numbers, metrics, and financial data found in the document.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "MetricName": {
+                            "type": "string",
+                            "method": "extract",
+                            "description": "Name of the metric (e.g., Revenue, Net Income)."
+                        },
+                        "MetricValue": {
+                            "type": "string",
+                            "method": "extract",
+                            "description": "Value and unit of the metric."
+                        },
+                        "Context": {
+                            "type": "string",
+                            "method": "extract",
+                            "description": "Surrounding context explaining the metric."
+                        }
+                    }
+                }
+            },
+            "ReadingOrder": {
+                "type": "string",
+                "method": "extract",
+                "description": "Logical reading order and flow of the document, reconstructed from layout analysis."
+            },
+            "DocumentMetadata": {
+                "type": "object",
+                "method": "extract",
+                "properties": {
+                    "NumPages": {
+                        "type": "integer",
+                        "method": "extract",
+                        "description": "Total number of pages analyzed."
+                    },
+                    "ComplexityLevel": {
+                        "type": "string",
+                        "method": "classify",
+                        "description": "Document complexity assessment.",
+                        "enum": ["simple", "moderate", "complex"]
+                    }
+                }
+            }
+        },
+        "definitions": {}
+    }
+}
